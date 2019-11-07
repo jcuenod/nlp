@@ -8,6 +8,27 @@ import TableCell from '@material-ui/core/TableCell'
 import TableRow from '@material-ui/core/TableRow'
 import Typography from '@material-ui/core/Typography';
 
+const toTitleCase = str =>
+	str.split(' ')
+		.map(w => w[0].toUpperCase() + w.substr(1).toLowerCase())
+		.join(' ')
+		
+const toString = value => {
+	if (typeof value === "string") {
+		return value
+	}
+	else if (Array.isArray(value)) {
+		return value.join(", ")
+	}
+	else if (typeof value === "object") {
+		if ("from" in value && "to" in value) {
+			return value.from + " to " + value.to
+		}
+	}
+	console.error(value)
+	throw "Don't know how to handle value that we just printed..."
+}
+
 const SearchDetailCard = ({ heading, values }) =>
 	<Card style={{ display: "inline-block", margin: "0.5em" }}>
 		<CardContent>
@@ -19,7 +40,7 @@ const SearchDetailCard = ({ heading, values }) =>
 					{values.map(({ key, value }) =>
 						<TableRow key={`${key}-${value}`}>
 							<TableCell style={{ fontSize: "small", border: "none" }}>{key}</TableCell>
-							<TableCell style={{ fontWeight: "bold", border: "none" }}>{value}</TableCell>
+							<TableCell style={{ fontWeight: "bold", border: "none" }}>{toString(value)}</TableCell>
 						</TableRow>
 					)}
 				</TableBody>

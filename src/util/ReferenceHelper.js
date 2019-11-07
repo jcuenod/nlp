@@ -84,7 +84,7 @@ const generateReference = (rids, abbreviation = false) => {
 	})
 	return humanReadable
 }
-const generateURL = (rid) => {
+const generateUrl = (rid) => {
 	const bk = _getBook(rid, true).replace(" ", "-")
 	const ch = _getChapter(rid)
 	const vs = rid % 1000
@@ -106,4 +106,4 @@ const isNewTestament = (reference) => {
 	const { book } = reference
 	return bookDetails.findIndex(d => d.name === book) > 38
 }
-export { generateReference, generateURL, generateRid, isNewTestament }
+export { generateReference, generateUrl, generateRid, isNewTestament }

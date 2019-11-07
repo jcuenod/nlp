@@ -13,12 +13,19 @@ html {
     direction: rtl;
     font-family: "SBL Biblit";
     font-size: x-large;
-    text-align: right;
 }
 
 chunk verse {
     position: relative;
     top: -5px;
     font-size: x-small;
-    color: red;
+    color: rgb(234, 67, 0);
+}
+
+smallcaps {
+    font-variant: small-caps;
+}
+
+poetry {
+    padding-left: 5px;
 }

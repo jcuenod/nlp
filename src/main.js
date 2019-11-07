@@ -5,8 +5,6 @@ import IconButton from '@material-ui/core/IconButton';
 import LinearProgress from '@material-ui/core/LinearProgress'
 import { createMuiTheme, ThemeProvider } from '@material-ui/core/styles';
 import ClearIcon from '@material-ui/icons/Clear';
-import ReferenceParser from 'referenceparser'
-const rp = new ReferenceParser()
 
 import SearchAppBar from './components/SearchAppBar'
 import SearchDetailCard from './components/SearchDetailCard'
@@ -16,55 +14,12 @@ import SearchManager from './util/SearchManager'
 
 if (!localStorage.getItem("search_history")) {
 	localStorage.setItem("search_history", JSON.stringify([
-		"find זכר in obadiah",
+		"find זכר in the pentateuch",
 		"find the prep ב with כל in the same phrase",
-		"find 3ms verbs in the piel stem with the root זכר and fem nouns in the same clause from gen 2 to isaiah 17 or jer"
+		"find עשׂה as a participle with שׁמים and ארץ in the same clause",
+		"find nominal ירא as a plural in isa, jer, ezek and wisdom",
+		// "find 3ms verbs in the piel stem with the root זכר and fem nouns in the same clause from gen 2 to isaiah 17 or jer"
 	]))
-}
-
-
-const getTermsAndConstraintsFromSearchIntent = results => {
-	const constraints = []
-	if (results.entities.hasOwnProperty("syntax_range")) {
-		constraints.push({ key: "Syntax Range", value: results.entities.syntax_range[0].value })
-	}
-	if (results.entities.hasOwnProperty("or")) {
-		if (results.entities.or.length > 1) {
-			constraints.push({ key: "Corpora", value: results.entities.or.map(v => rp.parse(v.value).book) })
-		}
-		else {
-			constraints.push({ key: "Corpus", value: rp.parse(results.entities.or[0].value).book })
-		}
-	}
-	if (results.entities.hasOwnProperty("from") && results.entities.hasOwnProperty("to")) {
-		const fbook = rp.parse(results.entities.from[0].value).book
-		const tbook = rp.parse(results.entities.to[0].value).book
-		constraints.push({
-			key: "Corpus Range",
-			value: { "from": fbook, "to": tbook }
-		})
-	}
-
-	const terms = []
-	if (results.entities.hasOwnProperty("search_term")) {
-		results.entities.search_term.forEach(t => {
-			const term = []
-			Object.keys(t.entities).forEach(e => {
-				if (e === "composite_pgn") {
-					return
-				}
-				term.push({ key: e, value: t.entities[e][0].value })
-			})
-			if (Object.keys(t.entities).includes("composite_pgn")) {
-				const composite_pgn = t.entities["composite_pgn"][0].value
-				term.push({ key: "person", value: composite_pgn.substring(0, 1) })
-				term.push({ key: "gender", value: composite_pgn.substring(1, 2) === "m" ? "masc" : "fem" })
-				term.push({ key: "number", value: composite_pgn.substring(2, 3) === "s" ? "sg" : "pl" })
-			}
-			terms.push(term)
-		})
-	}
-	return { constraints, terms }
 }
 
 const theme = createMuiTheme({
@@ -102,12 +57,15 @@ class App extends React.Component {
 	injectCharactersToSearchInput(char) {
 		this.setState({ searchInput: this.state.searchInput + char })
 	}
-	parseQuery() {
+	parseQuery(e) {
+		if ("preventDefault" in e) {
+			e.preventDefault()
+		}
 		this.setState({ busyParsingQuery: true })
 		SearchManager.parseQuery(this.state.searchInput).then(results => {
 			const switch_value = results.entities.intent[0].value
 			if (switch_value === "search") {
-				const { terms, constraints } = getTermsAndConstraintsFromSearchIntent(results)
+				const { terms, constraints } = SearchManager.getTermsAndConstraintsFromSearchIntent(results)
 				this.setState({
 					searchTerms: terms,
 					searchConstraints: constraints,
@@ -116,9 +74,9 @@ class App extends React.Component {
 				})
 				this.addToHistory(this.state.searchInput)
 				SearchManager.getResults({ terms, constraints }).then(response => {
-					console.log("results:", response.results.truncated ? response.results.truncated : response.results.length)
+					console.log("results:", response.truncated ? response.truncated : response.results.length)
 					this.setState({
-						searchResultCount: response.results.truncated ? response.results.truncated : response.results.length,
+						searchResultCount: response.truncated ? response.truncated : response.results.length,
 						searchResults: response.results,
 						busyQueryingParabible: false
 					})
@@ -155,7 +113,6 @@ class App extends React.Component {
 	render() {
 		const recentHistory = this.state.history.reverse()
 		const uniqueRecentHistory = recentHistory.filter((item, pos) => recentHistory.indexOf(item) === pos)
-		const uniqueRecentHistorySlice = uniqueRecentHistory.slice(0, 10)
 
 		let queryParsingInformation = null
 		if (this.state.busyParsingQuery) {
@@ -189,7 +146,7 @@ class App extends React.Component {
 				}}>
 					<SearchAppBar
 						value={this.state.searchInput}
-						history={uniqueRecentHistorySlice}
+						history={uniqueRecentHistory}
 						onChange={this.updateSearchInput.bind(this)}
 						injectChars={this.injectCharactersToSearchInput.bind(this)}
 						setSearchInput={this.setSearchInput.bind(this)}

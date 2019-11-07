@@ -32,7 +32,7 @@ const SearchAppBar = ({ value, history, onChange, injectChars, setSearchInput, p
     const classes = useStyles()
     return (
         <div style={{ display: "flex", justifyContent: "center" }}>
-            <Paper className={classes.root}>
+            <Paper component="form" className={classes.root} onSubmit={parseQuery}>
                 <HistoryMenu history={history} setSearchInput={setSearchInput} iconButtonClasses={classes.iconButton} />
                 <InputBase
                     onChange={onChange}
@@ -42,7 +42,7 @@ const SearchAppBar = ({ value, history, onChange, injectChars, setSearchInput, p
                     inputProps={{ 'aria-label': 'What do you want to do?' }}
                     value={value}
                 />
-                <IconButton onClick={parseQuery} className={classes.iconButton} aria-label="search">
+                <IconButton type="submit" className={classes.iconButton} aria-label="search">
                     <SearchIcon />
                 </IconButton>
                 <Divider className={classes.divider} orientation="vertical" />
