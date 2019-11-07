@@ -14,10 +14,10 @@ import SearchManager from './util/SearchManager'
 
 if (!localStorage.getItem("search_history")) {
 	localStorage.setItem("search_history", JSON.stringify([
-		"find זכר in the pentateuch",
+		"find 3ms זכר in the hiphil in the pentateuch",
 		"find the prep ב with כל in the same phrase",
 		"find עשׂה as a participle with שׁמים and ארץ in the same clause",
-		"find nominal ירא as a plural in isa, jer, ezek and wisdom",
+		"find ירא as a plural in isa, jer, ezek and wisdom",
 		// "find 3ms verbs in the piel stem with the root זכר and fem nouns in the same clause from gen 2 to isaiah 17 or jer"
 	]))
 }
