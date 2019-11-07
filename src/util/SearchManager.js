@@ -83,7 +83,9 @@ const getTermsAndConstraintsFromSearchIntent = results => {
 			if (Object.keys(t.entities).includes("composite_pgn")) {
 				const composite_pgn = t.entities["composite_pgn"][0].value
 				term.push({ key: "person", value: composite_pgn.substring(0, 1) })
-				term.push({ key: "gender", value: composite_pgn.substring(1, 2) === "m" ? "masc" : "fem" })
+				if (composite_pgn.substring(1, 2) !== "c") {
+					term.push({ key: "gender", value: composite_pgn.substring(1, 2) === "m" ? "masc" : "fem" })
+				}
 				term.push({ key: "number", value: composite_pgn.substring(2, 3) === "s" ? "sg" : "pl" })
 			}
 			terms.push(term)
