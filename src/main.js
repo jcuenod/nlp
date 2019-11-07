@@ -14,7 +14,7 @@ import SearchManager from './util/SearchManager'
 
 if (!localStorage.getItem("search_history")) {
 	localStorage.setItem("search_history", JSON.stringify([
-		"find 3ms זכר in the hiphil in the pentateuch",
+		"find זכר in the hiphil in the pentateuch",
 		"find the prep ב with כל in the same phrase",
 		"find עשׂה as a participle with שׁמים and ארץ in the same clause",
 		"find ירא as a plural in isa, jer, ezek and wisdom",
