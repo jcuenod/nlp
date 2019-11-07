@@ -10,6 +10,7 @@ import SearchAppBar from './components/SearchAppBar'
 import SearchDetailCard from './components/SearchDetailCard'
 import SearchResults from './components/SearchResults'
 import WordDetailsSnackbar from './components/WordDetailsSnackbar'
+import WordDetailsDialog from './components/WordDetailsDialog'
 
 import SearchManager from './util/SearchManager'
 
@@ -40,6 +41,7 @@ class App extends React.Component {
 			searchResults: [],
 			searchResultCount: -1,
 			showWordDetailsSnackbar: false,
+			showWordDetailsDialog: false,
 			wordDetails: {},
 			history: JSON.parse(localStorage.getItem("search_history"))
 		}
@@ -106,6 +108,7 @@ class App extends React.Component {
 	}
 	lookupWord(e) {
 		SearchManager.getWordInfo(+e._targetInst.key).then(response => {
+			console.log(response)
 			this.setState({
 				wordDetails: response,
 				showWordDetailsSnackbar: true
@@ -114,6 +117,15 @@ class App extends React.Component {
 	}
 	handleCloseWordDetailsSnackbar() {
 		this.setState({ showWordDetailsSnackbar: false })
+	}
+	handleMoreDetails() {
+		this.setState({
+			showWordDetailsSnackbar: false,
+			showWordDetailsDialog: true
+		})
+	}
+	handleCloseWordDetailsDialog() {
+		this.setState({ showWordDetailsDialog: false })
 	}
 	handleClear() {
 		this.setState({
@@ -190,6 +202,11 @@ class App extends React.Component {
 				<WordDetailsSnackbar
 					open={this.state.showWordDetailsSnackbar}
 					onClose={this.handleCloseWordDetailsSnackbar.bind(this)}
+					onMore={this.handleMoreDetails.bind(this)}
+					wordDetails={wordDetails} />
+				<WordDetailsDialog
+					open={this.state.showWordDetailsDialog}
+					onClose={this.handleCloseWordDetailsDialog.bind(this)}
 					wordDetails={wordDetails} />
 			</ThemeProvider>
 		)

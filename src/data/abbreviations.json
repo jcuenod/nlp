@@ -157,20 +157,20 @@
 			"noun": "Noun",
 			"verb": "Verb",
 			"adj": "Adjective",
-			
+
 			"art": "Article",
 			"dprn": "Demonstrative Pronoun",
 			"iprn": "Interrogative/Indefinite Pronoun",
 			"ppprn": "Personal/Possessive Pronoun",
 			"rprn": "Relative Pronoun",
 			"ost": "ὅστις",
-			
-			"conj":"Conjunction",
-			"part":"Particle",
-			"intj":"Interjection",
-			"indc":"Indeclinable Number",
-			"prep":"Preposition",
-			"adv":"Adverb"
+
+			"conj": "Conjunction",
+			"part": "Particle",
+			"intj": "Interjection",
+			"indc": "Indeclinable Number",
+			"prep": "Preposition",
+			"adv": "Adverb"
 		},
 		"tense": {
 			"pres": "Present",

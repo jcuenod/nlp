@@ -59,7 +59,7 @@ const useStyles = makeStyles(theme => ({
 		alignItems: 'center',
 	}
 }))
-const WordDetailsSnackbar = ({ wordDetails, open, onClose }) => {
+const WordDetailsSnackbar = ({ wordDetails, open, onClose, onMore }) => {
 	const classes = useStyles()
 	return (
 		<Snackbar
@@ -82,7 +82,7 @@ const WordDetailsSnackbar = ({ wordDetails, open, onClose }) => {
 			}
 			action={
 				[
-					<Button key="more" variant="outlined" color="secondary" size="small" onClick={onClose}>
+					<Button key="more" variant="outlined" color="secondary" size="small" onClick={onMore}>
 						MORE
 		  			</Button>,
 					<IconButton
