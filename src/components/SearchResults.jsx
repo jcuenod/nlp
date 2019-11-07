@@ -12,7 +12,7 @@ import WlcDisplay from './WlcDisplay'
 
 import { generateReference, generateUrl } from '../util/ReferenceHelper'
 
-const textMapToTableCells = text => {
+const textMapToTableCells = (text, lookupWord) => {
 	const versesByVersion = []
 	const getIndexOrCreate = key => {
 		const versions = versesByVersion.map(v => v.key)
@@ -27,8 +27,7 @@ const textMapToTableCells = text => {
 	text.forEach((v) => {
 		if ("wlc" in v) {
 			const index = getIndexOrCreate("wlc")
-			console.log(index)
-			versesByVersion[index].displayElements.push(<WlcDisplay key={v.rid} text={v.wlc} />)
+			versesByVersion[index].displayElements.push(<WlcDisplay lookupWord={lookupWord} key={v.rid} text={v.wlc} />)
 		}
 		if ("net" in v) {
 			const index = getIndexOrCreate("net")
@@ -46,7 +45,7 @@ const NoResults = () =>
 	<div><h1>No Results Found...</h1></div>
 
 
-const SearchResults = ({ results, count }) => count === 0 ? <NoResults /> :
+const SearchResults = ({ results, count, lookupWord }) => count === 0 ? <NoResults /> :
 	<div>
 		<Typography variant="subtitle1">
 			Found {count} Results
@@ -64,7 +63,7 @@ const SearchResults = ({ results, count }) => count === 0 ? <NoResults /> :
 								{generateReference(r.verses, true)}
 							</Link>
 						</TableCell>
-						{textMapToTableCells(r.text).map(v =>
+						{textMapToTableCells(r.text, lookupWord).map(v =>
 							<TableCell key={v.key} style={v.key === "wlc" ? { textAlign: "right" } : null}>
 								{v.displayElements}
 							</TableCell>

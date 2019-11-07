@@ -2,7 +2,7 @@ import ReferenceParser from 'referenceparser'
 const rp = new ReferenceParser()
 
 const nlpUrl = queryString => `https://api.wit.ai/message?q=${queryString}`
-const parabibleUrl = `https://parabible.com/api/term-search`
+const parabibleUrl = endpoint => `https://parabible.com/api/${endpoint}`
 
 
 const finals = {
@@ -78,19 +78,25 @@ const getTermsAndConstraintsFromSearchIntent = results => {
 				if (e === "composite_pgn") {
 					return
 				}
-				term.push({ key: e, value: t.entities[e][0].value })
+				if (e === "root") {
+					term.push({ key: "tricons", value: transformFinals(t.entities["root"][0].value) })
+				}
+				else {
+					term.push({ key: convert(e), value: convert(t.entities[e][0].value) })
+				}
 			})
 			if (Object.keys(t.entities).includes("composite_pgn")) {
 				const composite_pgn = t.entities["composite_pgn"][0].value
-				term.push({ key: "person", value: composite_pgn.substring(0, 1) })
+				term.push({ key: "ps", value: `p${composite_pgn.substring(0, 1)}` })
 				if (composite_pgn.substring(1, 2) !== "c") {
-					term.push({ key: "gender", value: composite_pgn.substring(1, 2) === "m" ? "masc" : "fem" })
+					term.push({ key: "gn", value: composite_pgn.substring(1, 2) })
 				}
-				term.push({ key: "number", value: composite_pgn.substring(2, 3) === "s" ? "sg" : "pl" })
+				term.push({ key: "nu", value: composite_pgn.substring(2, 3) === "s" ? "sg" : "pl" })
 			}
 			terms.push(term)
 		})
 	}
+	console.log("TERMS:", terms)
 	return { constraints, terms }
 }
 
@@ -151,17 +157,14 @@ const getResults = ({ terms, constraints }) => new Promise((resolve, reject) => 
 			uid: i,
 			inverted: false,
 			data: t.reduce((a, v) => {
-				a[convert(v.key)] = convert(v.value)
-				if (v.key === "root") {
-					a[convert(v.key)] = transformFinals(a[convert(v.key)])
-				}
+				a[v.key] = v.value
 				return a
 			}, {})
 		})
 	})
 	console.log(searchQuery)
 
-	fetch(parabibleUrl, {
+	fetch(parabibleUrl("term-search"), {
 		method: "POST",
 		headers: new Headers({
 			'Content-Type': 'application/json; charset=utf-8'
@@ -172,4 +175,15 @@ const getResults = ({ terms, constraints }) => new Promise((resolve, reject) => 
 		resolve(response)
 	})
 })
-export default { parseQuery, getResults, getTermsAndConstraintsFromSearchIntent }
+const getWordInfo = wid => new Promise((resolve, reject) => {
+	fetch(parabibleUrl("word-lookup"), {
+		method: "POST",
+		headers: new Headers({
+			'Content-Type': 'application/json; charset=utf-8'
+		}),
+		body: JSON.stringify({ wid })
+	}).then(r => r.json()).then(response => {
+		resolve(response)
+	})
+})
+export default { parseQuery, getResults, getWordInfo, getTermsAndConstraintsFromSearchIntent }

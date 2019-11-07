@@ -1,0 +1,276 @@
+{
+	"termToEnglish": {
+		"categories": {
+			"sp": "Part of Speech",
+			"vs": "Stem",
+			"vt": "Tense",
+			"lex": "Sense Lexeme",
+			"lex_utf8": "Sense Lexeme",
+			"g_cons_utf8": "Inflected Consonants",
+			"g_word_utf8": "Word in Text",
+			"voc_utf8": "Root",
+			"tricons": "Consonantal Root",
+			"ps": "Person",
+			"gn": "Gender",
+			"nu": "Number",
+			"g_prs_utf8": "Pronominal Suffix",
+			"prs_gn": "Prn. sfx Gender",
+			"prs_nu": "Prn. sfx Number",
+			"prs_ps": "Prn. sfx Person",
+			"st": "State",
+			"accent": "Accent",
+			"accent_quality": "Accent Type",
+			"is_definite": "Definite",
+			"has_suffix": "Has Pron. Suffix",
+			"g_uvf_utf8": "Univalent Final",
+			"sdbh": "Semantic Domain",
+			"lxxlexeme": "Parallel Lexeme",
+			"gloss": "Gloss",
+			"rootregex": "Root Regex",
+			"book": "Book",
+			"ch": "Chapter",
+			"v": "Verse",
+			"lexeme": "Lexeme",
+			"morphology": "Morphology* (LXX)",
+
+			"pos": "Part of Speech",
+			"tense": "Tense",
+			"voice": "Voice",
+			"mood": "Mood",
+			"person": "Person",
+			"number": "Number",
+			"case": "Case",
+			"gender": "Gender",
+			"declension": "Declension",
+			"degree": "Degree",
+			"gk_gloss": "Gloss",
+
+			"tc_note": "Text Critical Note"
+		},
+		"is_definite": {
+			"det": "Yes",
+			"und": "No"
+		},
+		"sp": {
+			"art": "Article",
+			"verb": "Verb",
+			"subs": "Noun",
+			"nmpr": "Proper noun",
+			"advb": "Adverb",
+			"prep": "Preposition",
+			"conj": "Conjunction",
+			"prps": "Pers. pronoun",
+			"prde": "Demons. pron.",
+			"prin": "Interr. pronoun",
+			"intj": "Interjection",
+			"nega": "Negative",
+			"inrg": "Interrogative",
+			"adjv": "Adjective"
+		},
+		"nu": {
+			"sg": "Singular",
+			"du": "Dual",
+			"pl": "Plural",
+			"unknown": "Unknown",
+			"NA": "NA"
+		},
+		"prs_nu": {
+			"sg": "Singular",
+			"du": "Dual",
+			"pl": "Plural",
+			"unknown": "Unknown",
+			"NA": "NA"
+		},
+		"gn": {
+			"m": "Masculine",
+			"f": "Feminine",
+			"unknown": "Unknown",
+			"NA": "NA"
+		},
+		"prs_gn": {
+			"m": "Masculine",
+			"f": "Feminine",
+			"unknown": "Unknown",
+			"NA": "NA"
+		},
+		"ps": {
+			"p1": "First",
+			"p2": "Second",
+			"p3": "Third",
+			"unknown": "Unknown",
+			"NA": "NA"
+		},
+		"prs_ps": {
+			"p1": "First",
+			"p2": "Second",
+			"p3": "Third",
+			"unknown": "Unknown",
+			"NA": "NA"
+		},
+		"vt": {
+			"perf": "Perfect",
+			"impf": "Imperfect",
+			"wayq": "Wayyiqtol",
+			"impv": "Imperative",
+			"infa": "Infinitive (Absolute)",
+			"infc": "Infinitive (Construct)",
+			"ptca": "Participle",
+			"ptcp": "Participle (Passive)",
+			"NA": "NA"
+		},
+		"vs": {
+			"hif": "Hif‘il (H)",
+			"hit": "Hitpa“el (H)",
+			"htpo": "Hitpo“el (H)",
+			"hof": "Hof‘al (H)",
+			"nif": "Nif‘al (H)",
+			"piel": "Pi“el (H)",
+			"poal": "Po“al (H)",
+			"poel": "Po“el (H)",
+			"pual": "Pu“al (H)",
+			"qal": "Qal (H)",
+			"afel": "Af‘el (Ar)",
+			"etpa": "Etpa“al (Ar)",
+			"etpe": "Etpe‘el (Ar)",
+			"haf": "Haf‘el (Ar)",
+			"hotp": "Hotpa“al (Ar)",
+			"hsht": "Hishtaf‘al (Ar)",
+			"htpa": "Hitpa“al (Ar)",
+			"htpe": "Hitpe‘el (Ar)",
+			"nit": "Nitpa“el (Ar)",
+			"pael": "Pa“el (Ar)",
+			"peal": "Pe‘al (Ar)",
+			"peil": "Pe‘il (Ar)",
+			"shaf": "Shaf‘el (Ar)",
+			"tif": "Tif‘al (Ar)",
+			"pasq": "Passiveqal (Ar)",
+			"NA": "NA"
+		},
+		"st": {
+			"a": "Absolute",
+			"c": "Construct",
+			"e": "Emphatic",
+			"NA": "NA"
+		},
+
+		"pos": {
+			"noun": "Noun",
+			"verb": "Verb",
+			"adj": "Adjective",
+			
+			"art": "Article",
+			"dprn": "Demonstrative Pronoun",
+			"iprn": "Interrogative/Indefinite Pronoun",
+			"ppprn": "Personal/Possessive Pronoun",
+			"rprn": "Relative Pronoun",
+			"ost": "ὅστις",
+			
+			"conj":"Conjunction",
+			"part":"Particle",
+			"intj":"Interjection",
+			"indc":"Indeclinable Number",
+			"prep":"Preposition",
+			"adv":"Adverb"
+		},
+		"tense": {
+			"pres": "Present",
+			"impf": "Imperfect",
+			"fut": "Future",
+			"aor": "Aorist",
+			"perf": "Perfect",
+			"plupf": "Pluperfect"
+		},
+		"voice": {
+			"act": "Active",
+			"mid": "Middle",
+			"pass": "Passive"
+		},
+		"mood": {
+			"ind": "Indicative",
+			"impv": "Imperative",
+			"subj": "Subjunctive",
+			"opt": "Optative",
+			"infn": "Infinitive",
+			"ptcp": "Participle"
+		},
+		"person": {
+			"1": "First",
+			"2": "Second",
+			"3": "Third"
+		},
+		"number": {
+			"sg": "Singular",
+			"dl": "Dual",
+			"pl": "Plural"
+		},
+		"case": {
+			"nom": "Nominative",
+			"gen": "Genitive",
+			"dat": "Dative",
+			"acc": "Accusative",
+			"voc": "Vocative"
+		},
+		"gender": {
+			"masc": "Masculine",
+			"fem": "Feminine",
+			"neut": "Neuter"
+		},
+		"degree": {
+			"comp": "Comparative",
+			"super": "Superlative"
+		},
+		"declension": {
+			"1": "First Declension",
+			"2": "Second Declension",
+			"3": "Third Declension",
+			"indcp": "Indeclinable Proper Noun"
+		}
+	},
+	"clause_types": {
+		"AjCl": "Adjective clause",
+		"CPen": "Casus pendens",
+		"Defc": "Defective clause atom",
+		"Ellp": "Ellipsis",
+		"InfA": "Infinitive absolute clause",
+		"InfC": "Infinitive construct clause",
+		"MSyn": "Macrosyntactic sign",
+		"NmCl": "Nominal clause",
+		"Ptcp": "Participle clause",
+		"Reop": "Reopening",
+		"Unkn": "Unknown",
+		"Voct": "Vocative clause",
+		"Way0": "Wayyiqtol-null clause",
+		"WayX": "Wayyiqtol-X clause",
+		"WIm0": "We-imperative-null clause",
+		"WImX": "We-imperative-X clause",
+		"WQt0": "We-qatal-null clause",
+		"WQtX": "We-qatal-X clause",
+		"WxI0": "We-x-imperative-null clause",
+		"WXIm": "We-X-imperative clause",
+		"WxIX": "We-x-imperative-X clause",
+		"WxQ0": "We-x-qatal-null clause",
+		"WXQt": "We-X-qatal clause",
+		"WxQX": "We-x-qatal-X clause",
+		"WxY0": "We-x-yiqtol-null clause",
+		"WXYq": "We-X-yiqtol clause",
+		"WxYX": "We-x-yiqtol-X clause",
+		"WYq0": "We-yiqtol-null clause",
+		"WYqX": "We-yiqtol-X clause",
+		"xIm0": "x-imperative-null clause",
+		"XImp": "X-imperative clause",
+		"xImX": "x-imperative-X clause",
+		"XPos": "Extraposition",
+		"xQt0": "x-qatal-null clause",
+		"XQtl": "X-qatal clause",
+		"xQtX": "x-qatal-X clause",
+		"xYq0": "x-yiqtol-null clause",
+		"XYqt": "X-yiqtol clause",
+		"xYqX": "x-yiqtol-X clause",
+		"ZIm0": "Zero-imperative-null clause",
+		"ZImX": "Zero-imperative-X clause",
+		"ZQt0": "Zero-qatal-null clause",
+		"ZQtX": "Zero-qatal-X clause",
+		"ZYq0": "Zero-yiqtol-null clause",
+		"ZYqX": "Zero-yiqtol-X clause"
+	}
+}

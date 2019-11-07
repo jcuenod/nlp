@@ -9,6 +9,7 @@ import ClearIcon from '@material-ui/icons/Clear';
 import SearchAppBar from './components/SearchAppBar'
 import SearchDetailCard from './components/SearchDetailCard'
 import SearchResults from './components/SearchResults'
+import WordDetailsSnackbar from './components/WordDetailsSnackbar'
 
 import SearchManager from './util/SearchManager'
 
@@ -38,6 +39,8 @@ class App extends React.Component {
 			searchConstraints: [],
 			searchResults: [],
 			searchResultCount: -1,
+			showWordDetailsSnackbar: false,
+			wordDetails: {},
 			history: JSON.parse(localStorage.getItem("search_history"))
 		}
 	}
@@ -101,6 +104,17 @@ class App extends React.Component {
 			}
 		})
 	}
+	lookupWord(e) {
+		SearchManager.getWordInfo(+e._targetInst.key).then(response => {
+			this.setState({
+				wordDetails: response,
+				showWordDetailsSnackbar: true
+			})
+		})
+	}
+	handleCloseWordDetailsSnackbar() {
+		this.setState({ showWordDetailsSnackbar: false })
+	}
 	handleClear() {
 		this.setState({
 			searchInput: "",
@@ -130,8 +144,9 @@ class App extends React.Component {
 			resultsDisplay = <LinearProgress style={{ width: "50%", marginTop: "1em" }} />
 		}
 		else if (this.state.searchResultCount > -1) {
-			resultsDisplay = <SearchResults results={this.state.searchResults} count={this.state.searchResultCount} />
+			resultsDisplay = <SearchResults lookupWord={this.lookupWord.bind(this)} results={this.state.searchResults} count={this.state.searchResultCount} />
 		}
+		const wordDetails = this.state.wordDetails.results ? this.state.wordDetails.results : {}
 		return (
 			<ThemeProvider theme={theme}>
 				<div style={{
@@ -172,6 +187,10 @@ class App extends React.Component {
 						<ClearIcon />
 					</IconButton>
 				</div>
+				<WordDetailsSnackbar
+					open={this.state.showWordDetailsSnackbar}
+					onClose={this.handleCloseWordDetailsSnackbar.bind(this)}
+					wordDetails={wordDetails} />
 			</ThemeProvider>
 		)
 	}

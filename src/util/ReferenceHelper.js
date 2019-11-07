@@ -1,4 +1,4 @@
-import bookDetails from "./bookDetails"
+import bookDetails from "../data/bookDetails"
 
 const _groupConsecutiveRids = (rids) => {
 	const ridSort = rids.sort()
@@ -7,8 +7,8 @@ const _groupConsecutiveRids = (rids) => {
 			a.push([v])
 			return a
 		}
-		const lastel = a[a.length - 1]
-		if (lastel[lastel.length - 1] + 1 == v) {
+		const last = a[a.length - 1]
+		if (last[last.length - 1] + 1 == v) {
 			a[a.length - 1].push(v)
 		}
 		else {

@@ -13,6 +13,7 @@ html {
     direction: rtl;
     font-family: "SBL Biblit";
     font-size: x-large;
+    cursor: pointer;
 }
 
 chunk verse {

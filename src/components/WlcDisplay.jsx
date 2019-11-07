@@ -8,12 +8,12 @@ const temperatures = [
 const getColor = ({ temperature }) =>
     temperature ? temperatures[temperature] : "inherit"
 
-export default ({ text }) =>
+export default ({ text, lookupWord }) =>
     <span className="hebrew">
         {text.map(words =>
             words.map(wbit => [
-                <span key={wbit.wid} style={{ color: getColor(wbit) }}>{wbit.word}</span>,
+                <span key={wbit.wid} style={{ color: getColor(wbit) }} onClick={lookupWord}>{wbit.word}</span>,
                 wbit.trailer
             ])
         )}
-    </span>
+    </span >
