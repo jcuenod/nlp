@@ -111,13 +111,11 @@ const parseQuery = searchText => new Promise((resolve, reject) => {
 			'Content-Type': 'application/json'
 		})
 	}).then(r => r.json()).then(results => {
-		if (results.entities.intent[0].value === "search") {
-			resolve(results)
-		}
+		resolve(results)
 	})
 })
 
-const getResults = ({ terms, constraints }) => new Promise((resolve, reject) => {
+const getResults = ({ terms, constraints, texts }) => new Promise((resolve, reject) => {
 	const searchQuery = {}
 
 	const constraintsKeys = constraints.map(c => c.key)
@@ -149,7 +147,7 @@ const getResults = ({ terms, constraints }) => new Promise((resolve, reject) => 
 	if (constraintsKeys.includes("Syntax Range")) {
 		searchQuery["search_range"] = constraints[constraintsKeys.indexOf("Syntax Range")].value.toLowerCase()
 	}
-	searchQuery["texts"] = ["net", "wlc"]
+	searchQuery["texts"] = texts
 
 	searchQuery["query"] = []
 	terms.forEach((t, i) => {
@@ -175,6 +173,9 @@ const getResults = ({ terms, constraints }) => new Promise((resolve, reject) => 
 		resolve(response)
 	})
 })
+
+
+
 const getWordInfo = wid => new Promise((resolve, reject) => {
 	fetch(parabibleUrl("word-lookup"), {
 		method: "POST",
@@ -186,4 +187,23 @@ const getWordInfo = wid => new Promise((resolve, reject) => {
 		resolve(response)
 	})
 })
-export default { parseQuery, getResults, getWordInfo, getTermsAndConstraintsFromSearchIntent }
+
+
+
+const getChapter = (unparsedReference, texts) => new Promise((resolve, reject) => {
+	const reference = rp.parse(unparsedReference)
+	fetch(parabibleUrl("chapter-text"), {
+		method: "POST",
+		headers: new Headers({
+			'Content-Type': 'application/json; charset=utf-8'
+		}),
+		body: JSON.stringify({
+			reference,
+			texts
+		})
+	}).then(r => r.json()).then(response => {
+		resolve(response)
+	})
+})
+
+export default { parseQuery, getResults, getWordInfo, getTermsAndConstraintsFromSearchIntent, getChapter }

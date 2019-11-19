@@ -9,6 +9,8 @@ import ClearIcon from '@material-ui/icons/Clear';
 import SearchAppBar from './components/SearchAppBar'
 import SearchDetailCard from './components/SearchDetailCard'
 import SearchResults from './components/SearchResults'
+import ChapterText from './components/ChapterText'
+import InfoSnackbar from './components/InfoSnackbar'
 import WordDetailsSnackbar from './components/WordDetailsSnackbar'
 import WordDetailsDialog from './components/WordDetailsDialog'
 
@@ -35,14 +37,20 @@ class App extends React.Component {
 		this.state = {
 			busyParsingQuery: false,
 			busyQueryingParabible: false,
+			displayTexts: ["wlc", "net"],
+			focusedContent: false,
 			searchInput: "",
 			searchTerms: [],
 			searchConstraints: [],
 			searchResults: [],
 			searchResultCount: -1,
+			chapterLocation: "",
+			chapterText: [],
 			showWordDetailsSnackbar: false,
 			showWordDetailsDialog: false,
 			wordDetails: {},
+			showInfoSnackbar: false,
+			infoSnackbarMessage: "",
 			history: JSON.parse(localStorage.getItem("search_history"))
 		}
 	}
@@ -68,6 +76,7 @@ class App extends React.Component {
 		}
 		this.setState({ busyParsingQuery: true })
 		SearchManager.parseQuery(this.state.searchInput).then(results => {
+
 			const switch_value = results.entities.intent[0].value
 			if (switch_value === "search") {
 				const { terms, constraints } = SearchManager.getTermsAndConstraintsFromSearchIntent(results)
@@ -78,32 +87,60 @@ class App extends React.Component {
 					busyQueryingParabible: true
 				})
 				this.addToHistory(this.state.searchInput)
-				SearchManager.getResults({ terms, constraints }).then(response => {
+				SearchManager.getResults({ terms, constraints, texts: this.state.displayTexts }).then(response => {
 					console.log("results:", response.truncated ? response.truncated : response.results.length)
 					this.setState({
 						searchResultCount: response.truncated ? response.truncated : response.results.length,
 						searchResults: response.results,
-						busyQueryingParabible: false
+						busyQueryingParabible: false,
+						focusedContent: "search"
 					})
 				})
 			}
 			else if (switch_value === "add_text") {
-				const texts = this.state.displayTexts.slice(0)
-				texts.push(results.entities.display_text[0].value)
-				this.setState({ displayTexts: texts })
+				const texts = new Set(this.state.displayTexts)
+				let text_to_add = results.entities.display_text[0].value
+				if (text_to_add === "bhs") text_to_add = "wlc"
+				texts.add(text_to_add)
+				this.setState({
+					displayTexts: Array.from(texts),
+					busyParsingQuery: false,
+					showInfoSnackbar: true,
+					infoSnackbarMessage: "Showing " + text_to_add
+				})
 			}
 			else if (switch_value === "remove_text") {
-				const texts = this.state.displayTexts.slice(0)
-				const doomedIndex = texts.findIndex(results.entities.display_text[0].value)
-				texts.splice(doomedIndex, 1)
-				this.setState({ displayTexts: texts })
+				const texts = new Set(this.state.displayTexts)
+				let text_to_hide = results.entities.display_text[0].value
+				if (text_to_hide === "bhs") text_to_hide = "wlc"
+				texts.delete(text_to_hide)
+				this.setState({
+					displayTexts: Array.from(texts),
+					busyParsingQuery: false,
+					showInfoSnackbar: true,
+					infoSnackbarMessage: "Hiding " + text_to_hide
+				})
 			}
 			else if (switch_value === "navigate") {
-				const texts = this.state.displayTexts.slice(0)
-				const doomedIndex = texts.findIndex(results.entities.display_text[0].value)
-				texts.splice(doomedIndex, 1)
-				this.setState({ displayTexts: texts })
+				let unparsedReference = ""
+				try {
+					unparsedReference = results.entities.reference[0].value
+				}
+				catch (e) {
+					console.error(results)
+					console.error("Failed to get reference from navigate intent (cf. results above)")
+					return
+				}
+				SearchManager.getChapter(unparsedReference, this.state.displayTexts).then(results => {
+					this.setState({
+						chapterLocation: results.reference.book + " " + results.reference.chapter,
+						chapterText: results.text,
+						focusedContent: "chapter",
+						busyParsingQuery: false
+					})
+				})
 			}
+
 		})
 	}
 	lookupWord(e) {
@@ -126,6 +163,9 @@ class App extends React.Component {
 	}
 	handleCloseWordDetailsDialog() {
 		this.setState({ showWordDetailsDialog: false })
+	}
+	handleInfoSnackbar() {
+		this.setState({ showInfoSnackbar: false })
 	}
 	handleClear() {
 		this.setState({
@@ -151,12 +191,23 @@ class App extends React.Component {
 			}
 		}
 
-		let resultsDisplay = null
+		let contentDisplay = null
 		if (this.state.busyQueryingParabible) {
-			resultsDisplay = <LinearProgress style={{ width: "50%", marginTop: "1em" }} />
+			contentDisplay = <LinearProgress style={{ width: "50%", marginTop: "1em" }} />
 		}
-		else if (this.state.searchResultCount > -1) {
-			resultsDisplay = <SearchResults lookupWord={this.lookupWord.bind(this)} results={this.state.searchResults} count={this.state.searchResultCount} />
+		else if (this.state.focusedContent === "chapter") {
+			contentDisplay = <ChapterText
+				lookupWord={this.lookupWord.bind(this)}
+				location={this.state.chapterLocation}
+				text={this.state.chapterText}
+				displayTexts={this.state.displayTexts} />
+		}
+		else if (this.state.focusedContent === "search" && this.state.searchResultCount > -1) {
+			contentDisplay = <SearchResults
+				lookupWord={this.lookupWord.bind(this)}
+				results={this.state.searchResults}
+				count={this.state.searchResultCount}
+				displayTexts={this.state.displayTexts} />
 		}
 		const wordDetails = this.state.wordDetails.results ? this.state.wordDetails.results : {}
 		return (
@@ -191,7 +242,7 @@ class App extends React.Component {
 						justifyContent: "center",
 						padding: "2em"
 					}}>
-						{resultsDisplay}
+						{contentDisplay}
 					</div>
 				</div>
 				<div style={{ position: "absolute", top: "1em", right: "1em" }}>
@@ -199,6 +250,10 @@ class App extends React.Component {
 						<ClearIcon />
 					</IconButton>
 				</div>
+				<InfoSnackbar
+					open={this.state.showInfoSnackbar}
+					onClose={this.handleInfoSnackbar.bind(this)}
+					message={this.state.infoSnackbarMessage} />
 				<WordDetailsSnackbar
 					open={this.state.showWordDetailsSnackbar}
 					onClose={this.handleCloseWordDetailsSnackbar.bind(this)}

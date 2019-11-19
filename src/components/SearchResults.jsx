@@ -12,7 +12,7 @@ import WlcDisplay from './WlcDisplay'
 
 import { generateReference, generateUrl } from '../util/ReferenceHelper'
 
-const textMapToTableCells = (text, lookupWord) => {
+const textMapToTableCells = (text, lookupWord, displayTexts) => {
 	const versesByVersion = []
 	const getIndexOrCreate = key => {
 		const versions = versesByVersion.map(v => v.key)
@@ -25,15 +25,15 @@ const textMapToTableCells = (text, lookupWord) => {
 		}
 	}
 	text.forEach((v) => {
-		if ("wlc" in v) {
+		if ("wlc" in v && displayTexts.includes("wlc")) {
 			const index = getIndexOrCreate("wlc")
 			versesByVersion[index].displayElements.push(<WlcDisplay lookupWord={lookupWord} key={v.rid} text={v.wlc} />)
 		}
-		if ("net" in v) {
+		if ("net" in v && displayTexts.includes("net")) {
 			const index = getIndexOrCreate("net")
 			versesByVersion[index].displayElements.push(<NetDisplay key={v.rid} text={v.net} />)
 		}
-		if ("lxx" in v) {
+		if ("lxx" in v && displayTexts.includes("lxx")) {
 			const index = getIndexOrCreate("lxx")
 			versesByVersion[index].displayElements.push(<LxxDisplay key={v.rid} text={v.lxx} />)
 		}
@@ -45,7 +45,7 @@ const NoResults = () =>
 	<div><h1>No Results Found...</h1></div>
 
 
-const SearchResults = ({ results, count, lookupWord }) => count === 0 ? <NoResults /> :
+const SearchResults = ({ results, count, lookupWord, displayTexts }) => count === 0 ? <NoResults /> :
 	<div>
 		<Typography variant="subtitle1">
 			Found {count} Results
@@ -63,7 +63,7 @@ const SearchResults = ({ results, count, lookupWord }) => count === 0 ? <NoResul
 								{generateReference(r.verses, true)}
 							</Link>
 						</TableCell>
-						{textMapToTableCells(r.text, lookupWord).map(v =>
+						{textMapToTableCells(r.text, lookupWord, displayTexts).map(v =>
 							<TableCell key={v.key} style={v.key === "wlc" ? { textAlign: "right" } : null}>
 								{v.displayElements}
 							</TableCell>
