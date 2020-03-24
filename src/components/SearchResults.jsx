@@ -9,6 +9,7 @@ import Typography from '@material-ui/core/Typography'
 
 import NetDisplay from './NetDisplay'
 import WlcDisplay from './WlcDisplay'
+import LxxDisplay from './LxxDisplay'
 
 import { generateReference, generateUrl } from '../util/ReferenceHelper'
 
