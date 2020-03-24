@@ -263,6 +263,12 @@ class App extends React.Component {
 					open={this.state.showWordDetailsDialog}
 					onClose={this.handleCloseWordDetailsDialog.bind(this)}
 					wordDetails={wordDetails} />
+				<div>
+					Tagged BHS with Syntax Trees provided by <Link href="http://dx.doi.org/10.17026%2Fdans-z6y-skyh">↪</Link>
+					<Link href="https://creativecommons.org/licenses/by-nc/4.0/">
+						Attribution-NonCommercial 4.0 International (CC BY-NC 4.0)
+					</Link>
+				</div>
 			</ThemeProvider>
 		)
 	}
