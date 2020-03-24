@@ -36,7 +36,7 @@ const textMapToTableCells = (text, lookupWord, displayTexts) => {
 		}
 		if ("lxx" in v && displayTexts.includes("lxx")) {
 			const index = getIndexOrCreate("lxx")
-			versesByVersion[index].displayElements.push(<LxxDisplay key={v.rid} text={v.lxx} />)
+			versesByVersion[index].displayElements.push(<LxxDisplay lookupWord={lookupWord} key={v.rid} text={v.lxx} />)
 		}
 	})
 	return versesByVersion

@@ -9,6 +9,7 @@ import Typography from '@material-ui/core/Typography'
 
 import NetDisplay from './NetDisplay'
 import WlcDisplay from './WlcDisplay'
+import LxxDisplay from './LxxDisplay'
 
 import { generateReference, generateUrl } from '../util/ReferenceHelper'
 import { display } from '@material-ui/system'
@@ -36,7 +37,7 @@ const textMapToTableCells = (text, lookupWord) => {
         }
         if ("lxx" in v) {
             const index = getIndexOrCreate("lxx")
-            versesByVersion[index].displayElements.push(<LxxDisplay key={v.rid} text={v.lxx} />)
+            versesByVersion[index].displayElements.push(<LxxDisplay lookupWord={lookupWord} key={v.rid} text={v.lxx} />)
         }
     })
     return versesByVersion
@@ -68,7 +69,7 @@ const SingleText = ({ text, lookupWord, version }) =>
                     : (version === "net") ?
                         <NetDisplay key={verse.rid} text={verse.net} />
                         : (version === "lxx") ?
-                            <LxxDisplay key={verse.rid} text={verse.lxx} />
+                            <LxxDisplay lookupWord={lookupWord} key={verse.rid} text={verse.lxx} />
                             : null}
             </span>
         )}
@@ -91,7 +92,7 @@ const MultipleText = ({ text, lookupWord, displayTexts }) =>
                                 : (k === "net") ?
                                     <NetDisplay key={r.rid} text={r.net} />
                                     : (k === "lxx") ?
-                                        <LxxDisplay key={r.rid} text={r.lxx} />
+                                        <LxxDisplay lookupWord={lookupWord} key={r.rid} text={r.lxx} />
                                         : null}
 
                         </TableCell>
