@@ -15,6 +15,14 @@ html {
     font-size: x-large;
     cursor: pointer;
 }
+.greek {
+    font-family: "SBL Biblit";
+	font-size: large;
+	cursor: pointer;
+}
+chunk {
+	font-size: medium;
+}
 
 chunk verse {
     position: relative;
