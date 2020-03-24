@@ -2,6 +2,7 @@ import ReactDOM from 'react-dom'
 import React from 'react'
 
 import IconButton from '@material-ui/core/IconButton';
+import Link from '@material-ui/core/Link'
 import LinearProgress from '@material-ui/core/LinearProgress'
 import { createMuiTheme, ThemeProvider } from '@material-ui/core/styles';
 import ClearIcon from '@material-ui/icons/Clear';
@@ -263,12 +264,12 @@ class App extends React.Component {
 					open={this.state.showWordDetailsDialog}
 					onClose={this.handleCloseWordDetailsDialog.bind(this)}
 					wordDetails={wordDetails} />
-				<div>
+		{/*<div>
 					Tagged BHS with Syntax Trees provided by <Link href="http://dx.doi.org/10.17026%2Fdans-z6y-skyh">↪</Link>
 					<Link href="https://creativecommons.org/licenses/by-nc/4.0/">
 						Attribution-NonCommercial 4.0 International (CC BY-NC 4.0)
 					</Link>
-				</div>
+				</div>*/}
 			</ThemeProvider>
 		)
 	}
