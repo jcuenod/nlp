@@ -1,7 +1,7 @@
 import ReferenceParser from 'referenceparser'
 const rp = new ReferenceParser()
 
-const nlpUrl = queryString => `https://api.wit.ai/message?v=20191120q=${queryString}`
+const nlpUrl = queryString => `https://api.wit.ai/message?v=20191120&q=${queryString}`
 const parabibleUrl = endpoint => `https://parabible.com/api/${endpoint}`
 
 
