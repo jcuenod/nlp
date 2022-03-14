@@ -1,7 +1,7 @@
 import ReferenceParser from 'referenceparser'
 const rp = new ReferenceParser()
 
-const nlpUrl = queryString => `https://api.wit.ai/message?v=20191120&q=${queryString}`
+const nlpUrl = queryString => `https://pb-cognitivei-services.cognitiveservices.azure.com/luis/prediction/v3.0/apps/622a740f-abea-4b08-9906-367d0f8462c0/slots/staging/predict?show-all-intents=true&log=true&subscription-key=4ecdbe4f38594032b87f8a0e59b7b578&query=${queryString}`
 const parabibleUrl = endpoint => `https://parabible.com/api/${endpoint}`
 
 
@@ -27,7 +27,7 @@ const knownCorpora = {
 }
 const conversions = {
 	"part_of_speech": "sp",
-	"root": "tricons",
+	"lexeme": "tricons",
 	"stem": "vs",
 	"tense": "vt",
 	"number": "nu",
@@ -48,50 +48,56 @@ const corporaKeys = Object.keys(knownCorpora)
 const bookOrCorpusFromText = t =>
 	corporaKeys.includes(t.toLowerCase()) ? t.toLowerCase() : rp.parse(t).book
 
-const getTermsAndConstraintsFromSearchIntent = results => {
+const getTermsAndConstraintsFromSearchIntent = entities => {
 	const constraints = []
-	if (results.entities.hasOwnProperty("syntax_range")) {
-		constraints.push({ key: "Syntax Range", value: results.entities.syntax_range[0].value })
-	}
-	if (results.entities.hasOwnProperty("or")) {
-		if (results.entities.or.length > 1) {
-			constraints.push({ key: "Corpora", value: results.entities.or.map(v => bookOrCorpusFromText(v.value)) })
-		}
-		else {
-			constraints.push({ key: "Corpus", value: bookOrCorpusFromText(results.entities.or[0].value) })
-		}
-	}
-	if (results.entities.hasOwnProperty("from") && results.entities.hasOwnProperty("to")) {
-		const fbook = rp.parse(results.entities.from[0].value).book
-		const tbook = rp.parse(results.entities.to[0].value).book
-		constraints.push({
-			key: "Corpus Range",
-			value: { "from": fbook, "to": tbook }
-		})
+	if ("syntaxRange" in entities) {
+		constraints.push({ key: "Syntax Range", value: entities.syntaxRange[0][0] })
 	}
 
+	// if ("corpora" in entities) {
+	// 	entities.syntaxRange[0][0]
+	// 	constraints.push({ key: "Corpora", value: entities.syntaxRange[0][0] })
+	// }
+
+	// if (entities.hasOwnProperty("or")) {
+	// 	if (entities.or.length > 1) {
+	// 		constraints.push({ key: "Corpora", value: entities.or.map(v => bookOrCorpusFromText(v.value)) })
+	// 	}
+	// 	else {
+	// 		constraints.push({ key: "Corpus", value: bookOrCorpusFromText(entities.or[0].value) })
+	// 	}
+	// }
+	// if (entities.hasOwnProperty("from") && entities.hasOwnProperty("to")) {
+	// 	const fbook = rp.parse(entities.from[0].value).book
+	// 	const tbook = rp.parse(entities.to[0].value).book
+	// 	constraints.push({
+	// 		key: "Corpus Range",
+	// 		value: { "from": fbook, "to": tbook }
+	// 	})
+	// }
+
 	const terms = []
-	if (results.entities.hasOwnProperty("search_term")) {
-		results.entities.search_term.forEach(t => {
+	if ("searchTerm" in entities) {
+		entities.searchTerm.forEach(t => {
 			const term = []
-			Object.keys(t.entities).forEach(e => {
-				if (e === "composite_pgn") {
+			Object.keys(t).forEach(e => {
+				if (e === "composite_png") {
 					return
 				}
-				if (e === "root") {
-					term.push({ key: "tricons", value: transformFinals(t.entities["root"][0].value) })
+				if (e === "lexeme") {
+					term.push({ key: "tricons", value: transformFinals(t["lexeme"][0]) })
 				}
 				else {
-					term.push({ key: convert(e), value: convert(t.entities[e][0].value) })
+					term.push({ key: convert(e), value: convert(t[e][0][0]) })
 				}
 			})
-			if (Object.keys(t.entities).includes("composite_pgn")) {
-				const composite_pgn = t.entities["composite_pgn"][0].value
-				term.push({ key: "ps", value: `p${composite_pgn.substring(0, 1)}` })
-				if (composite_pgn.substring(1, 2) !== "c") {
-					term.push({ key: "gn", value: composite_pgn.substring(1, 2) })
+			if (Object.keys(t).includes("composite_png")) {
+				const composite_png = t["composite_png"][0][0]
+				term.push({ key: "ps", value: `p${composite_png.substring(0, 1)}` })
+				if (composite_png.substring(1, 2) !== "c") {
+					term.push({ key: "gn", value: composite_png.substring(1, 2) })
 				}
-				term.push({ key: "nu", value: composite_pgn.substring(2, 3) === "s" ? "sg" : "pl" })
+				term.push({ key: "nu", value: composite_png.substring(2, 3) === "s" ? "sg" : "pl" })
 			}
 			terms.push(term)
 		})
@@ -107,10 +113,11 @@ const parseQuery = searchText => new Promise((resolve, reject) => {
 	console.log(searchText, url)
 	fetch(url, {
 		headers: new Headers({
-			'Authorization': 'Bearer EKHGH2LBZ744Y4QD2FIQ7VUJH45I5NUC',
+			// 'Authorization': 'Bearer EKHGH2LBZ744Y4QD2FIQ7VUJH45I5NUC',
 			'Content-Type': 'application/json'
 		})
 	}).then(r => r.json()).then(results => {
+		console.log(results)
 		resolve(results)
 	})
 })

@@ -78,9 +78,9 @@ class App extends React.Component {
 		this.setState({ busyParsingQuery: true })
 		SearchManager.parseQuery(this.state.searchInput).then(results => {
 
-			const switch_value = results.entities.intent[0].value
-			if (switch_value === "search") {
-				const { terms, constraints } = SearchManager.getTermsAndConstraintsFromSearchIntent(results)
+		const switch_value = results.prediction.topIntent
+		if (switch_value === "termSearch") {
+			const { terms, constraints } = SearchManager.getTermsAndConstraintsFromSearchIntent(results.prediction.entities)
 				this.setState({
 					searchTerms: terms,
 					searchConstraints: constraints,
