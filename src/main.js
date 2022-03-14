@@ -1,11 +1,11 @@
 import ReactDOM from 'react-dom'
 import React from 'react'
 
-import IconButton from '@material-ui/core/IconButton';
+import IconButton from '@material-ui/core/IconButton'
 import Link from '@material-ui/core/Link'
 import LinearProgress from '@material-ui/core/LinearProgress'
-import { createMuiTheme, ThemeProvider } from '@material-ui/core/styles';
-import ClearIcon from '@material-ui/icons/Clear';
+import { createMuiTheme, ThemeProvider } from '@material-ui/core/styles'
+import ClearIcon from '@material-ui/icons/Clear'
 
 import SearchAppBar from './components/SearchAppBar'
 import SearchDetailCard from './components/SearchDetailCard'
@@ -71,78 +71,77 @@ class App extends React.Component {
 	injectCharactersToSearchInput(char) {
 		this.setState({ searchInput: this.state.searchInput + char })
 	}
-	parseQuery(e) {
+	async parseQuery(e) {
 		if ("preventDefault" in e) {
 			e.preventDefault()
 		}
 		this.setState({ busyParsingQuery: true })
-		SearchManager.parseQuery(this.state.searchInput).then(results => {
+		const results = await SearchManager.parseQuery(this.state.searchInput)
+		console.log(results)
 
 		const switch_value = results.prediction.topIntent
 		if (switch_value === "termSearch") {
 			const { terms, constraints } = SearchManager.getTermsAndConstraintsFromSearchIntent(results.prediction.entities)
+			this.setState({
+				searchTerms: terms,
+				searchConstraints: constraints,
+				busyParsingQuery: false,
+				busyQueryingParabible: true
+			})
+			this.addToHistory(this.state.searchInput)
+			SearchManager.getResults({ terms, constraints, texts: this.state.displayTexts }).then(response => {
+				console.log("results:", response.truncated ? response.truncated : response.results.length)
 				this.setState({
-					searchTerms: terms,
-					searchConstraints: constraints,
-					busyParsingQuery: false,
-					busyQueryingParabible: true
+					searchResultCount: response.truncated ? response.truncated : response.results.length,
+					searchResults: response.results,
+					busyQueryingParabible: false,
+					focusedContent: "search"
 				})
-				this.addToHistory(this.state.searchInput)
-				SearchManager.getResults({ terms, constraints, texts: this.state.displayTexts }).then(response => {
-					console.log("results:", response.truncated ? response.truncated : response.results.length)
-					this.setState({
-						searchResultCount: response.truncated ? response.truncated : response.results.length,
-						searchResults: response.results,
-						busyQueryingParabible: false,
-						focusedContent: "search"
-					})
-				})
+			})
+		}
+		else if (switch_value === "add_text") {
+			const texts = new Set(this.state.displayTexts)
+			let text_to_add = results.entities.display_text[0].value
+			if (text_to_add === "bhs") text_to_add = "wlc"
+			texts.add(text_to_add)
+			this.setState({
+				displayTexts: Array.from(texts),
+				busyParsingQuery: false,
+				showInfoSnackbar: true,
+				infoSnackbarMessage: "Showing " + text_to_add
+			})
+		}
+		else if (switch_value === "remove_text") {
+			const texts = new Set(this.state.displayTexts)
+			let text_to_hide = results.entities.display_text[0].value
+			if (text_to_hide === "bhs") text_to_hide = "wlc"
+			texts.delete(text_to_hide)
+			this.setState({
+				displayTexts: Array.from(texts),
+				busyParsingQuery: false,
+				showInfoSnackbar: true,
+				infoSnackbarMessage: "Hiding " + text_to_hide
+			})
+		}
+		else if (switch_value === "navigate") {
+			let unparsedReference = ""
+			try {
+				unparsedReference = results.entities.reference[0].value
 			}
-			else if (switch_value === "add_text") {
-				const texts = new Set(this.state.displayTexts)
-				let text_to_add = results.entities.display_text[0].value
-				if (text_to_add === "bhs") text_to_add = "wlc"
-				texts.add(text_to_add)
+			catch (e) {
+				console.error(results)
+				console.error("Failed to get reference from navigate intent (cf. results above)")
+				return
+			}
+			SearchManager.getChapter(unparsedReference, this.state.displayTexts).then(results => {
 				this.setState({
-					displayTexts: Array.from(texts),
-					busyParsingQuery: false,
-					showInfoSnackbar: true,
-					infoSnackbarMessage: "Showing " + text_to_add
+					chapterLocation: results.reference.book + " " + results.reference.chapter,
+					chapterText: results.text,
+					focusedContent: "chapter",
+					busyParsingQuery: false
 				})
-			}
-			else if (switch_value === "remove_text") {
-				const texts = new Set(this.state.displayTexts)
-				let text_to_hide = results.entities.display_text[0].value
-				if (text_to_hide === "bhs") text_to_hide = "wlc"
-				texts.delete(text_to_hide)
-				this.setState({
-					displayTexts: Array.from(texts),
-					busyParsingQuery: false,
-					showInfoSnackbar: true,
-					infoSnackbarMessage: "Hiding " + text_to_hide
-				})
-			}
-			else if (switch_value === "navigate") {
-				let unparsedReference = ""
-				try {
-					unparsedReference = results.entities.reference[0].value
-				}
-				catch (e) {
-					console.error(results)
-					console.error("Failed to get reference from navigate intent (cf. results above)")
-					return
-				}
-				SearchManager.getChapter(unparsedReference, this.state.displayTexts).then(results => {
-					this.setState({
-						chapterLocation: results.reference.book + " " + results.reference.chapter,
-						chapterText: results.text,
-						focusedContent: "chapter",
-						busyParsingQuery: false
-					})
-				})
-			}
-
-		})
+			})
+		}
 	}
 	lookupWord(e) {
 		SearchManager.getWordInfo(+e._targetInst.key).then(response => {
@@ -264,7 +263,7 @@ class App extends React.Component {
 					open={this.state.showWordDetailsDialog}
 					onClose={this.handleCloseWordDetailsDialog.bind(this)}
 					wordDetails={wordDetails} />
-		{/*<div>
+				{/*<div>
 					Tagged BHS with Syntax Trees provided by <Link href="http://dx.doi.org/10.17026%2Fdans-z6y-skyh">↪</Link>
 					<Link href="https://creativecommons.org/licenses/by-nc/4.0/">
 						Attribution-NonCommercial 4.0 International (CC BY-NC 4.0)
