@@ -15,22 +15,22 @@ const b64encode = str => {
 	))
 }
 
+const prepareSearchTerms = terms =>
+	terms.map((t, i) => ({
+		uid: i,
+		inverted: false,
+		data: t.reduce((a, v) => {
+			a[v.key] = v.value.normalize("NFC")
+			return a
+		}, {})
+	}))
+
 const getTermSearchResultCount = ({
 	terms,
 	treeNodeType = "clause",
 	corpusFilter: possibleCorpusFilter
 }) => new Promise(async (resolve, reject) => {
-	const searchTerms = []
-	terms.forEach((t, i) => {
-		searchTerms.push({
-			uid: i,
-			inverted: false,
-			data: t.reduce((a, v) => {
-				a[v.key] = v.value
-				return a
-			}, {})
-		})
-	})
+	const searchTerms = prepareSearchTerms(terms)
 	const corpusFilter = possibleCorpusFilter ? { corpusFilter: possibleCorpusFilter } : {}
 	const jsonQuery = JSON.stringify({
 		searchTerms,
@@ -60,17 +60,7 @@ const getTermSearchResults = ({
 	// if (!atLeastOneTermNotInverted()) {
 	// 	reject("No positive search terms")
 	// }
-	const searchTerms = []
-	terms.forEach((t, i) => {
-		searchTerms.push({
-			uid: i,
-			inverted: false,
-			data: t.reduce((a, v) => {
-				a[v.key] = v.value.normalize("NFC")
-				return a
-			}, {})
-		})
-	})
+	const searchTerms = prepareSearchTerms(terms)
 
 	// We don't want to send the corpus filter if its empty
 	const corpusFilter = possibleCorpusFilter ? { corpusFilter: possibleCorpusFilter } : {}
