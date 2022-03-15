@@ -2,10 +2,9 @@
   "name": "bookish-material",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
   "scripts": {
     "start": "parcel ./index.html --https",
-    "build": "parcel build ./index.html -d docs --public-url '/nlp'",
+    "build": "parcel build ./index.html --dist-dir docs --public-url '/nlp'",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
@@ -13,6 +12,8 @@
   "dependencies": {
     "@material-ui/core": "^4.6.0",
     "@material-ui/icons": "^4.5.1",
+    "@material-ui/system": "^4.12.1",
+    "@swc/helpers": "^0.3.6",
     "components": "^0.1.0",
     "material-ui": "^0.20.2",
     "react": "^16.11.0",

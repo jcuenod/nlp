@@ -6,7 +6,7 @@ import Table from '@material-ui/core/Table'
 import TableBody from '@material-ui/core/TableBody'
 import TableCell from '@material-ui/core/TableCell'
 import TableRow from '@material-ui/core/TableRow'
-import Typography from '@material-ui/core/Typography';
+import Typography from '@material-ui/core/Typography'
 
 import abbreviations from '../data/abbreviations'
 const finals = {
@@ -16,8 +16,8 @@ const finals = {
 	"צ": "ץ",
 	"פ": "ף"
 }
-const transformFinals = text =>
-	Object.keys(finals).includes(text.slice(-1)) ? text.slice(0, -1) + finals[text.slice(-1)] : text
+const transformFinals = text => text
+// Object.keys(finals).includes(text.slice(-1)) ? text.slice(0, -1) + finals[text.slice(-1)] : text
 
 
 const toTitleCase = str =>

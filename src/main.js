@@ -89,15 +89,30 @@ class App extends React.Component {
 				busyQueryingParabible: true
 			})
 			this.addToHistory(this.state.searchInput)
-			SearchManager.getResults({ terms, constraints, texts: this.state.displayTexts }).then(response => {
-				console.log("results:", response.truncated ? response.truncated : response.results.length)
-				this.setState({
-					searchResultCount: response.truncated ? response.truncated : response.results.length,
-					searchResults: response.results,
-					busyQueryingParabible: false,
-					focusedContent: "search"
+
+			const treeNodeType = constraints.find(c => c.key === "Syntax Range")?.value
+			const corpusFilter = constraints.find(c => c.key === "Corpora")?.value
+			SearchManager.getTermSearchResults({ terms, treeNodeType, corpusFilter })
+				// .then(response => {
+				// SearchManager.getResults({ terms, constraints, texts: this.state.displayTexts })
+				.then(response => {
+					this.setState({
+						searchResults: response,
+						busyQueryingParabible: false,
+						focusedContent: "search"
+					})
 				})
-			})
+
+			SearchManager.getTermSearchResultCount({ terms, treeNodeType, corpusFilter })
+				.then(response => {
+					this.setState({
+						searchResultCount: response.count
+					})
+				})
+
+			// Get number of results
+			// this.setState({
+			// 	searchResultCount: response.truncated ? response.truncated : response.results.length,
 		}
 		else if (switch_value === "add_text") {
 			const texts = new Set(this.state.displayTexts)
@@ -207,7 +222,7 @@ class App extends React.Component {
 				lookupWord={this.lookupWord.bind(this)}
 				results={this.state.searchResults}
 				count={this.state.searchResultCount}
-				displayTexts={this.state.displayTexts} />
+				displayTexts={[7, 4]} />
 		}
 		const wordDetails = this.state.wordDetails.results ? this.state.wordDetails.results : {}
 		return (

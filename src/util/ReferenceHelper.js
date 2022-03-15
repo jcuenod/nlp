@@ -7,8 +7,8 @@ const _groupConsecutiveRids = (rids) => {
 			a.push([v])
 			return a
 		}
-		const last = a[a.length - 1]
-		if (last[last.length - 1] + 1 == v) {
+		const lastel = a[a.length - 1]
+		if (lastel[lastel.length - 1] + 1 == v) {
 			a[a.length - 1].push(v)
 		}
 		else {
@@ -20,11 +20,11 @@ const _groupConsecutiveRids = (rids) => {
 }
 
 const _getBook = (rid, abbreviation) => {
-	const book = bookDetails[Math.floor(rid / 10000000) - 1]
+	const book = bookDetails[Math.floor(rid / 1000000) - 1]
 	return abbreviation ? book.abbreviation : book.name
 }
 const _getChapter = (rid) => {
-	return Math.floor(rid / 1000) % 10000
+	return Math.floor(rid / 1000) % 1000
 }
 const _getVerse = (rid) => {
 	return rid % 1000
@@ -84,7 +84,7 @@ const generateReference = (rids, abbreviation = false) => {
 	})
 	return humanReadable
 }
-const generateUrl = (rid) => {
+const generateURL = (rid) => {
 	const bk = _getBook(rid, true).replace(" ", "-")
 	const ch = _getChapter(rid)
 	const vs = rid % 1000
@@ -96,7 +96,7 @@ const _getBookInt = (book) => {
 }
 
 const generateRid = (reference) => {
-	const book = _getBookInt(reference.book) * 10000000
+	const book = _getBookInt(reference.book) * 1000000
 	const ch = reference.chapter * 1000
 	const v = reference.hasOwnProperty("verse") ? reference.verse : 0
 	return book + ch + v
@@ -106,4 +106,4 @@ const isNewTestament = (reference) => {
 	const { book } = reference
 	return bookDetails.findIndex(d => d.name === book) > 38
 }
-export { generateReference, generateUrl, generateRid, isNewTestament }
+export { generateReference, generateURL, generateRid, isNewTestament }
