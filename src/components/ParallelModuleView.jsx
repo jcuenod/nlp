@@ -63,10 +63,10 @@ const getColor = ({ wid, moduleId, hotWordSet, warmWordSet }) => {
     // }
     // else
     if (hotWordSet.has(wid)) {
-        return { "color": "#d70000" }
+        return { "color": "rgb(234, 67, 0)" }
     }
     else if (warmWordSet.has(wid)) {
-        return { "color": "#ffc000" }
+        return { "color": "rgb(0, 69, 120)" }
     }
 
     return {}
